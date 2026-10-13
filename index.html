@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SandChef | Home</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/svg+xml" href="logo.svg">
+
+  <!-- 🔥 Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, deleteDoc, doc }
+      from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBqo4Iiohy3H_MyoC7TRq0xc9alh6LkXQY",
+      authDomain: "sandchef-92397.firebaseapp.com",
+      projectId: "sandchef-92397",
+      storageBucket: "sandchef-92397.firebasestorage.app",
+      messagingSenderId: "876625869958",
+      appId: "1:876625869958:web:1dedd8711533735e102507",
+      measurementId: "G-YTD2RD5JD4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.db = db;
+    window.collection = collection;
+    window.addDoc = addDoc;
+    window.query = query;
+    window.orderBy = orderBy;
+    window.onSnapshot = onSnapshot;
+    window.serverTimestamp = serverTimestamp;
+    window.deleteDoc = deleteDoc;
+    window.doc = doc;
+
+    // Signal that Firebase is ready
+    window.firebaseReady = true;
+    window.dispatchEvent(new Event("firebaseReady"));
+  </script>
+
+  <!-- 📊 Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YTD2RD5JD4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-YTD2RD5JD4');
+  </script>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <img src="logo.svg" alt="SandChef Logo">
+  </a>
+  <div class="links">
+    <a href="index.html" class="active">Home</a>
+    <a href="menu.html">Menu</a>
+    <a href="about.html">About</a>
+    <a href="faq.html">FAQ</a>
+    <a href="contact.html">Contact</a>
+    <a href="order.html">Order</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-logo">
+    <img src="logo.svg" alt="SandChef Logo">
+  </div>
+  <p class="eyebrow">FRESH • AFFORDABLE • DELICIOUS</p>
+  <h1>Welcome to <span>SandChef</span></h1>
+  <p class="tagline">Making Your Choice Delicious</p>
+  <div class="hero-buttons">
+    <a class="btn" href="order.html">Order Now</a>
+    <a class="btn btn-outline" href="menu.html">View Menu</a>
+  </div>
+</header>
+
+<!-- 🎁 PROMOS -->
+<section class="promos">
+  <div class="title">
+    <h2>🔥 Ongoing Promos</h2>
+    <p>Grab these deals before they're gone!</p>
+  </div>
+
+  <div class="promos-grid">
+    <div class="promo-card">
+      <div class="promo-badge">FRI-YAY</div>
+      <h3>Buy 2 Get 1 Free</h3>
+      <p>Every Friday — order any 2 sandwiches and get the 3rd one FREE.</p>
+      <span class="promo-code">No code needed</span>
+    </div>
+
+    <div class="promo-card">
+      <div class="promo-badge">STUDENT</div>
+      <h3>Show Your ID</h3>
+      <p>Get ₱2 off on any combo meal when you show your student ID.</p>
+      <span class="promo-code">In-person only</span>
+    </div>
+
+    <div class="promo-card">
+      <div class="promo-badge">LOYALTY</div>
+      <h3>5th Order = Free Juice</h3>
+      <p>Buy any sandwich 5 times and get a free juice on your 6th visit!</p>
+      <span class="promo-code">Ask seller to track</span>
+    </div>
+  </div>
+</section>
+
+<!-- 📊 LIVE STATS -->
+<section class="stats-section">
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-number" id="statSold">0</div>
+      <div class="stat-label">Sandwiches Sold</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" id="statCustomers">0</div>
+      <div class="stat-label">Happy Customers</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" id="statRating">0.0</div>
+      <div class="stat-label">Average Rating</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" id="statOrders">0</div>
+      <div class="stat-label">Total Orders</div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="title">
+    <h2>What Our Customers Say</h2>
+    <p>Real feedback from real snackers.</p>
+  </div>
+
+  <div class="reviews-grid" id="reviewsGrid">
+    <p class="reviews-loading">Loading reviews...</p>
+  </div>
+</section>
+
+<!-- ✍️ REVIEW FORM -->
+<section class="review-form-section">
+  <div class="title">
+    <h2>Share Your Experience</h2>
+    <p>Tried SandChef? We'd love to hear from you!</p>
+  </div>
+
+  <form id="reviewForm" class="review-form">
+    <div class="form-group">
+      <label for="reviewerName">Your Name *</label>
+      <input id="reviewerName" required maxlength="60" placeholder="Enter your name">
+    </div>
+
+    <div class="form-group">
+      <label>Your Rating *</label>
+      <div class="star-picker" id="starPicker">
+        <span data-star="1">★</span>
+        <span data-star="2">★</span>
+        <span data-star="3">★</span>
+        <span data-star="4">★</span>
+        <span data-star="5">★</span>
+      </div>
+      <input type="hidden" id="rating" value="5">
+    </div>
+
+    <div class="form-group">
+      <label for="reviewText">Your Review *</label>
+      <textarea id="reviewText" required maxlength="300" placeholder="Tell us what you think..."></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit Review</button>
+    <p class="error" id="reviewError" role="alert"></p>
+  </form>
+
+  <div class="review-confirm" id="reviewConfirm">
+    <div class="confirm-icon">✅</div>
+    <h3>Thank you for your review!</h3>
+    <p id="reviewConfirmText"></p>
+  </div>
+</section>
+
+<section class="info-section">
+  <div class="title">
+    <h2>Where to Find Us</h2>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="feature-icon">📍</div>
+      <h3>Pickup Location</h3>
+      <p>At school — near the main gate.<br>We'll confirm via Messenger.</p>
+    </div>
+
+    <div class="info-card">
+      <div class="feature-icon">🕒</div>
+      <h3>Opening Hours</h3>
+      <p>Monday to Friday<br>Recess & Lunch Break</p>
+    </div>
+
+    <div class="info-card">
+      <div class="feature-icon">💵</div>
+      <h3>Payment</h3>
+      <p>Cash / Face-to-Face<br>or GCash (ask seller)</p>
+    </div>
+  </div>
+</section>
+
+<section class="order-banner">
+  <p class="eyebrow">YOUR NEXT FAVORITE SNACK</p>
+  <h2>Ready to Take a Bite?</h2>
+  <p>Choose your favorite sandwich and place your order today.</p>
+  <a class="menu-btn banner-btn" href="order.html">Place Your Order</a>
+  <p class="payment-note">Payment: Cash / Face-to-face at school</p>
+</section>
+
+<footer>
+  <p>© 2026 SandChef</p>
+  <p>Fresh • Affordable • Delicious</p>
+</footer>
+
+<!-- 🔥 ALL SCRIPTS -->
+<script>
+// =================================
+// WAIT UNTIL FIREBASE IS READY
+// =================================
+function whenFirebaseReady(callback) {
+  if (window.firebaseReady && window.db) {
+    callback();
+  } else {
+    window.addEventListener("firebaseReady", callback, { once: true });
+  }
+}
+
+// =================================
+// HELPERS
+// =================================
+function escapeHtml(str) {
+  const div = document.createElement("div");
+  div.textContent = str || "";
+  return div.innerHTML;
+}
+
+// =================================
+// STAR PICKER
+// =================================
+const starPicker = document.getElementById("starPicker");
+const ratingInput = document.getElementById("rating");
+
+starPicker.querySelectorAll("span").forEach(star => {
+  star.addEventListener("click", () => {
+    const value = Number(star.dataset.star);
+    ratingInput.value = value;
+    starPicker.querySelectorAll("span").forEach(s => {
+      s.classList.toggle("active", Number(s.dataset.star) <= value);
+    });
+  });
+});
+starPicker.querySelectorAll("span").forEach(s => s.classList.add("active"));
+
+// =================================
+// SUBMIT REVIEW
+// =================================
+const reviewForm = document.getElementById("reviewForm");
+const reviewError = document.getElementById("reviewError");
+const reviewConfirm = document.getElementById("reviewConfirm");
+const reviewConfirmText = document.getElementById("reviewConfirmText");
+
+reviewForm.addEventListener("submit", async event => {
+  event.preventDefault();
+
+  const name = document.getElementById("reviewerName").value.trim();
+  const rating = Number(document.getElementById("rating").value);
+  const text = document.getElementById("reviewText").value.trim();
+
+  if (!name || !text) {
+    reviewError.textContent = "Please fill in all fields.";
+    return;
+  }
+
+  reviewError.textContent = "Sending...";
+
+  try {
+    await window.addDoc(window.collection(window.db, "reviews"), {
+      name: name,
+      rating: rating,
+      text: text,
+      createdAt: window.serverTimestamp()
+    });
+
+    reviewError.textContent = "";
+    reviewConfirmText.textContent = `⭐ ${rating}/5 — "${text}" — ${name}`;
+    reviewConfirm.style.display = "block";
+
+    reviewForm.reset();
+    ratingInput.value = 5;
+    starPicker.querySelectorAll("span").forEach(s => s.classList.add("active"));
+
+    reviewConfirm.scrollIntoView({ behavior: "smooth", block: "center" });
+  } catch (err) {
+    console.error("Error adding review:", err);
+    reviewError.textContent = "Something went wrong. Please try again.";
+  }
+});
+
+// =================================
+// LIVE STATS + LIVE REVIEWS
+// =================================
+let ordersData = [];
+let reviewsData = [];
+
+function loadLiveStats() {
+  // Orders listener
+  window.onSnapshot(window.collection(window.db, "orders"), (snapshot) => {
+    ordersData = [];
+    snapshot.forEach(d => ordersData.push(d.data()));
+    updateStats();
+  }, (err) => {
+    console.error("Orders listen error:", err);
+  });
+
+  // Reviews listener
+  window.onSnapshot(window.collection(window.db, "reviews"), (snapshot) => {
+    reviewsData = [];
+    snapshot.forEach(d => reviewsData.push(d.data()));
+    updateStats();
+  }, (err) => {
+    console.error("Reviews listen error:", err);
+  });
+}
+
+function updateStats() {
+  // Sandwiches sold
+  let totalSold = 0;
+  ordersData.forEach(order => {
+    (order.items || []).forEach(item => {
+      totalSold += Number(item.qty) || 0;
+    });
+  });
+
+  // Unique customers
+  const uniqueNames = new Set(
+    ordersData
+      .map(o => (o.name || "").trim().toLowerCase())
+      .filter(Boolean)
+  );
+
+  // Average rating
+  let avgRating = "0.0";
+  if (reviewsData.length > 0) {
+    const sum = reviewsData.reduce((acc, r) => acc + (Number(r.rating) || 0), 0);
+    avgRating = (sum / reviewsData.length).toFixed(1);
+  }
+
+  // Total orders
+  const totalOrders = ordersData.length;
+
+  // Update the numbers
+  animateStat("statSold", totalSold);
+  animateStat("statCustomers", uniqueNames.size);
+  animateStat("statOrders", totalOrders);
+
+  const ratingEl = document.getElementById("statRating");
+  if (ratingEl) ratingEl.textContent = avgRating + " ★";
+}
+
+function animateStat(id, target) {
+  const el = document.getElementById(id);
+  if (!el) return;
+
+  const duration = 1200;
+  const startTime = performance.now();
+
+  function step(currentTime) {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const current = Math.floor(target * progress);
+    el.textContent = current;
+    if (progress < 1) requestAnimationFrame(step);
+    else el.textContent = target;
+  }
+
+  requestAnimationFrame(step);
+}
+
+// =================================
+// LIVE REVIEWS GRID
+// =================================
+function initReviews() {
+  const reviewsGrid = document.getElementById("reviewsGrid");
+  if (!reviewsGrid) return;
+
+  const q = window.query(
+    window.collection(window.db, "reviews"),
+    window.orderBy("createdAt", "desc")
+  );
+
+  window.onSnapshot(q, (snapshot) => {
+    reviewsGrid.innerHTML = "";
+
+    if (snapshot.empty) {
+      reviewsGrid.innerHTML = '<p class="reviews-empty">No reviews yet. Be the first!</p>';
+      return;
+    }
+
+    snapshot.forEach((docSnap) => {
+      const data = docSnap.data();
+      const stars = "★".repeat(data.rating) + "☆".repeat(5 - data.rating);
+
+      const card = document.createElement("div");
+      card.className = "review-card";
+      card.innerHTML = `
+        <button class="delete-review" data-id="${docSnap.id}" title="Delete review">×</button>
+        <div class="stars">${stars}</div>
+        <p>"${escapeHtml(data.text)}"</p>
+        <span class="review-author">— ${escapeHtml(data.name)}</span>
+      `;
+      reviewsGrid.appendChild(card);
+    });
+
+    reviewsGrid.querySelectorAll(".delete-review").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const password = prompt("Enter admin password to delete:");
+        if (password === null) return;
+        if (password !== "sandchef2026admin") {
+          alert("❌ Incorrect password.");
+          return;
+        }
+
+        try {
+          await window.deleteDoc(window.doc(window.db, "reviews", btn.dataset.id));
+        } catch (err) {
+          console.error("Delete failed:", err);
+          alert("❌ Could not delete.");
+        }
+      });
+    });
+  }, (err) => {
+    console.error("Reviews grid error:", err);
+    reviewsGrid.innerHTML = '<p class="reviews-empty">Could not load reviews.</p>';
+  });
+}
+
+// =================================
+// START EVERYTHING
+// =================================
+whenFirebaseReady(() => {
+  console.log("✅ Firebase ready — starting listeners");
+  loadLiveStats();
+  initReviews();
+});
+</script>
+
+</body>
+</html>

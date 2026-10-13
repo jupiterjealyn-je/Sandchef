@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SandChef | Admin</title>
+  <link rel="icon" type="image/svg+xml" href="logo.svg">
+
+  <!-- 🔥 Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, query, orderBy, onSnapshot, doc, deleteDoc, updateDoc, serverTimestamp }
+      from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBqo4Iiohy3H_MyoC7TRq0xc9alh6LkXQY",
+      authDomain: "sandchef-92397.firebaseapp.com",
+      projectId: "sandchef-92397",
+      storageBucket: "sandchef-92397.firebasestorage.app",
+      messagingSenderId: "876625869958",
+      appId: "1:876625869958:web:1dedd8711533735e102507",
+      measurementId: "G-YTD2RD5JD4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.db = db;
+    window.collection = collection;
+    window.query = query;
+    window.orderBy = orderBy;
+    window.onSnapshot = onSnapshot;
+    window.doc = doc;
+    window.deleteDoc = deleteDoc;
+    window.updateDoc = updateDoc;
+    window.serverTimestamp = serverTimestamp;
+  </script>
+
+  <!-- 📊 Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YTD2RD5JD4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-YTD2RD5JD4');
+  </script>
+
+  <style>
+    /* =================================
+       ADMIN PAGE STYLES
+       ================================= */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #fffaf2;
+      color: #2b2118;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ===== LOGIN SCREEN ===== */
+    .login-screen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+      background: linear-gradient(135deg, #f5dfbd, #fffaf2);
+    }
+
+    .login-box {
+      background: #ffffff;
+      border: 1px solid #ead9c3;
+      border-radius: 18px;
+      padding: 40px 32px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 15px 40px rgba(67, 43, 22, 0.15);
+    }
+
+    .login-box img {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 20px;
+      display: block;
+    }
+
+    .login-box h1 {
+      font-size: 24px;
+      color: #8b451f;
+      margin-bottom: 8px;
+    }
+
+    .login-box p {
+      font-size: 14px;
+      color: #7a6b5c;
+      margin-bottom: 24px;
+    }
+
+    .login-box input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid #cdb99f;
+      border-radius: 10px;
+      background: #fffaf2;
+      font-size: 16px;
+      font-family: inherit;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+
+    .login-box input:focus {
+      outline: none;
+      border-color: #a65d2a;
+      box-shadow: 0 0 0 3px rgba(166, 93, 42, 0.12);
+    }
+
+    .login-box button {
+      width: 100%;
+      padding: 14px;
+      background: #8b451f;
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-family: inherit;
+    }
+
+    .login-box button:hover {
+      background: #633015;
+    }
+
+    .login-error {
+      color: #c0392b;
+      font-size: 14px;
+      margin-top: 12px;
+      min-height: 20px;
+      font-weight: bold;
+    }
+
+    /* ===== DASHBOARD ===== */
+    .dashboard {
+      display: none;
+      padding: 30px 8%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      padding-bottom: 20px;
+      margin-bottom: 25px;
+      border-bottom: 2px solid #f5dfbd;
+    }
+
+    .dashboard-header h1 {
+      font-size: 28px;
+      color: #8b451f;
+      margin: 0;
+    }
+
+    .dashboard-header .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .dashboard-header button {
+      padding: 10px 18px;
+      background: #f5dfbd;
+      color: #633015;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-family: inherit;
+    }
+
+    .dashboard-header button:hover {
+      background: #ead0aa;
+    }
+
+    .logout-btn {
+      background: #c0392b !important;
+      color: white !important;
+    }
+
+    .logout-btn:hover {
+      background: #922b21 !important;
+    }
+
+    /* ===== STATS ===== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 18px;
+      margin-bottom: 35px;
+    }
+
+    .stat-card {
+      background: #ffffff;
+      border: 1px solid #ead9c3;
+      border-radius: 14px;
+      padding: 22px;
+      text-align: center;
+      box-shadow: 0 4px 14px rgba(67, 43, 22, 0.06);
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: bold;
+      color: #8b451f;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: #7a6b5c;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: bold;
+    }
+
+    /* ===== TABS ===== */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #f5dfbd;
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      padding: 12px 22px;
+      font-size: 15px;
+      font-weight: bold;
+      color: #7a6b5c;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+      font-family: inherit;
+      margin-bottom: -2px;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      color: #8b451f;
+    }
+
+    .tab-btn.active {
+      color: #8b451f;
+      border-bottom-color: #8b451f;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* ===== ORDER / REVIEW CARDS ===== */
+    .items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .item-card {
+      background: #ffffff;
+      border: 1px solid #ead9c3;
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: 0 4px 14px rgba(67, 43, 22, 0.05);
+      transition: box-shadow 0.2s;
+    }
+
+    .item-card:hover {
+      box-shadow: 0 8px 20px rgba(67, 43, 22, 0.1);
+    }
+
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px dashed #ead9c3;
+    }
+
+    .item-name {
+      font-size: 17px;
+      font-weight: bold;
+      color: #2b2118;
+    }
+
+    .item-time {
+      font-size: 12px;
+      color: #7a6b5c;
+      margin-top: 3px;
+    }
+
+    .item-total {
+      font-size: 22px;
+      font-weight: bold;
+      color: #8b451f;
+    }
+
+    .item-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+      font-size: 14px;
+      color: #45372b;
+      margin-bottom: 12px;
+    }
+
+    .item-details strong {
+      color: #8b451f;
+    }
+
+    .item-items-list {
+      background: #fffaf2;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin: 12px 0;
+      font-size: 14px;
+    }
+
+    .item-items-list div {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+    }
+
+    .item-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding-top: 12px;
+      border-top: 1px dashed #ead9c3;
+    }
+
+    .item-actions button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 7px;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .btn-complete {
+      background: #27ae60;
+      color: white;
+    }
+
+    .btn-complete:hover {
+      background: #1e8449;
+    }
+
+    .btn-pending {
+      background: #f39c12;
+      color: white;
+    }
+
+    .btn-pending:hover {
+      background: #d68910;
+    }
+
+    .btn-delete {
+      background: #c0392b;
+      color: white;
+    }
+
+    .btn-delete:hover {
+      background: #922b21;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .status-pending {
+      background: #fef5e7;
+      color: #b9770e;
+    }
+
+    .status-completed {
+      background: #eafaf1;
+      color: #1e8449;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 50px 20px;
+      color: #7a6b5c;
+      font-style: italic;
+      background: #ffffff;
+      border: 1px solid #ead9c3;
+      border-radius: 14px;
+    }
+
+    .review-stars {
+      color: #f5a623;
+      font-size: 20px;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    /* =================================
+       ANALYTICS TAB STYLES
+       ================================= */
+
+    .analytics-section {
+      margin-bottom: 35px;
+    }
+
+    .analytics-section h2 {
+      font-size: 20px;
+      color: #8b451f;
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f5dfbd;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 18px;
+      margin-bottom: 35px;
+    }
+
+    .kpi-card {
+      background: #ffffff;
+      border: 1px solid #ead9c3;
+      border-radius: 14px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 4px 14px rgba(67, 43, 22, 0.06);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(67, 43, 22, 0.12);
+    }
+
+    .kpi-icon {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .kpi-value {
+      font-size: 30px;
+      font-weight: bold;
+      color: #8b451f;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .kpi-label {
+      font-size: 12px;
+      color: #7a6b5c;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: bold;
+    }
+
+    .activity-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+    }
+
+    .activity-panel {
+      background: #ffffff;
+      border: 1px solid #ead9c3;
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: 0 4px 14px rgba(67, 43, 22, 0.05);
+    }
+
+    .activity-panel h3 {
+      font-size: 16px;
+      color: #8b451f;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px dashed #ead9c3;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .activity-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .activity-list li {
+      padding: 10px 0;
+      font-size: 14px;
+      color: #45372b;
+      border-bottom: 1px dashed #f5dfbd;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .activity-list li:last-child {
+      border-bottom: none;
+    }
+
+    .activity-list li strong {
+      color: #8b451f;
+    }
+
+    .activity-list li .time {
+      font-size: 11px;
+      color: #7a6b5c;
+      white-space: nowrap;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 700px) {
+      .dashboard { padding: 20px 18px; }
+      .dashboard-header h1 { font-size: 22px; }
+      .stat-value { font-size: 26px; }
+      .item-total { font-size: 18px; }
+      .tab-btn { padding: 10px 14px; font-size: 14px; }
+
+      .activity-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .kpi-value { font-size: 24px; }
+      .kpi-icon { font-size: 26px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- 🔒 LOGIN SCREEN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <img src="logo.svg" alt="SandChef Logo">
+    <h1>Admin Login</h1>
+    <p>Enter your password to access the dashboard.</p>
+    <input type="password" id="passwordInput" placeholder="Enter password"
+           onkeydown="if(event.key==='Enter') checkPassword()">
+    <button onclick="checkPassword()">Login</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<!-- 📊 DASHBOARD -->
+<div class="dashboard" id="dashboard">
+
+  <div class="dashboard-header">
+    <h1>🥪 SandChef Admin</h1>
+    <div class="actions">
+      <button onclick="location.reload()">🔄 Refresh</button>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-value" id="statOrders">0</div>
+      <div class="stat-label">Total Orders</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="statRevenue">₱0</div>
+      <div class="stat-label">Revenue</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="statPending">0</div>
+      <div class="stat-label">Pending</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="statReviews">0</div>
+      <div class="stat-label">Reviews</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('orders', this)">📋 Orders</button>
+    <button class="tab-btn" onclick="switchTab('reviews', this)">⭐ Reviews</button>
+    <button class="tab-btn" onclick="switchTab('analytics', this)">📊 Analytics</button>
+  </div>
+
+  <div class="tab-content active" id="tab-orders">
+    <div class="items-list" id="ordersList">
+      <div class="empty-state">Loading orders...</div>
+    </div>
+  </div>
+
+  <div class="tab-content" id="tab-reviews">
+    <div class="items-list" id="reviewsList">
+      <div class="empty-state">Loading reviews...</div>
+    </div>
+  </div>
+
+  <div class="tab-content" id="tab-analytics">
+
+    <div class="analytics-section">
+      <h2>📈 Key Metrics</h2>
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-icon">🛒</div>
+          <div class="kpi-value" id="kpiOrdersToday">0</div>
+          <div class="kpi-label">Orders Today</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon">💰</div>
+          <div class="kpi-value" id="kpiRevenueToday">₱0</div>
+          <div class="kpi-label">Revenue Today</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon">📅</div>
+          <div class="kpi-value" id="kpiOrdersWeek">0</div>
+          <div class="kpi-label">Orders This Week</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon">📊</div>
+          <div class="kpi-value" id="kpiAvgOrder">₱0</div>
+          <div class="kpi-label">Avg Order Value</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="analytics-section">
+      <h2>⏱️ Recent Activity</h2>
+      <div class="activity-grid">
+
+        <div class="activity-panel">
+          <h3>🛒 Last 5 Orders</h3>
+          <ul class="activity-list" id="recentOrdersList">
+            <li class="empty-state" style="border:none; padding:20px;">No orders yet.</li>
+          </ul>
+        </div>
+
+        <div class="activity-panel">
+          <h3>⭐ Last 5 Reviews</h3>
+          <ul class="activity-list" id="recentReviewsList">
+            <li class="empty-state" style="border:none; padding:20px;">No reviews yet.</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="analytics-section">
+      <h2>🏆 Best Sellers</h2>
+      <div class="activity-panel">
+        <ul class="activity-list" id="bestSellersList">
+          <li class="empty-state" style="border:none; padding:20px;">No data yet.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+// =================================
+// AUTHENTICATION
+// =================================
+const ADMIN_PASSWORD = "sandchef2026admin"; // 🔒 Change this!
+
+function checkPassword() {
+  const input = document.getElementById("passwordInput").value;
+  const error = document.getElementById("loginError");
+
+  if (input === ADMIN_PASSWORD) {
+    sessionStorage.setItem("sandchefAdmin", "true");
+    showDashboard();
+  } else {
+    error.textContent = "❌ Incorrect password.";
+    document.getElementById("passwordInput").value = "";
+  }
+}
+
+function logout() {
+  sessionStorage.removeItem("sandchefAdmin");
+  location.reload();
+}
+
+function showDashboard() {
+  document.getElementById("loginScreen").style.display = "none";
+  document.getElementById("dashboard").style.display = "block";
+  loadOrders();
+  loadReviews();
+}
+
+window.addEventListener("load", () => {
+  if (sessionStorage.getItem("sandchefAdmin") === "true") {
+    showDashboard();
+  }
+});
+
+// =================================
+// TAB SWITCHING
+// =================================
+function switchTab(tabName, btn) {
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+
+  btn.classList.add("active");
+  document.getElementById("tab-" + tabName).classList.add("active");
+}
+
+// =================================
+// HELPERS
+// =================================
+const peso = amount => "₱" + Number(amount).toLocaleString("en-PH");
+
+function formatDate(timestamp) {
+  if (!timestamp) return "—";
+  const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+  return date.toLocaleString("en-PH", {
+    month: "short", day: "numeric",
+    hour: "numeric", minute: "2-digit"
+  });
+}
+
+function timeAgo(timestamp) {
+  if (!timestamp) return "—";
+  const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+  const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
+
+  if (seconds < 60) return "just now";
+  if (seconds < 3600) return Math.floor(seconds / 60) + "m ago";
+  if (seconds < 86400) return Math.floor(seconds / 3600) + "h ago";
+  return Math.floor(seconds / 86400) + "d ago";
+}
+
+function escapeHtml(str) {
+  const div = document.createElement("div");
+  div.textContent = str || "";
+  return div.innerHTML;
+}
+
+function isToday(timestamp) {
+  if (!timestamp) return false;
+  const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+  const today = new Date();
+  return date.toDateString() === today.toDateString();
+}
+
+function isThisWeek(timestamp) {
+  if (!timestamp) return false;
+  const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+  const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  return date >= weekAgo;
+}
+
+// =================================
+// LOAD ORDERS + COMPUTE ANALYTICS
+// =================================
+let allOrders = [];
+let allReviews = [];
+
+function loadOrders() {
+  const list = document.getElementById("ordersList");
+  const q = window.query(
+    window.collection(window.db, "orders"),
+    window.orderBy("createdAt", "desc")
+  );
+
+  window.onSnapshot(q, (snapshot) => {
+    list.innerHTML = "";
+    allOrders = [];
+
+    let totalRevenue = 0;
+    let pending = 0;
+
+    if (snapshot.empty) {
+      list.innerHTML = '<div class="empty-state">No orders yet.</div>';
+    } else {
+      snapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        data._id = docSnap.id;
+        allOrders.push(data);
+
+        totalRevenue += Number(data.total) || 0;
+        if (data.status !== "completed") pending++;
+
+        const status = data.status || "pending";
+        const statusClass = status === "completed" ? "status-completed" : "status-pending";
+        const statusText = status === "completed" ? "Completed" : "Pending";
+
+        const itemsHtml = (data.items || []).map(item =>
+          `<div><span>${escapeHtml(item.name)} × ${item.qty}</span>
+           <strong>${peso(item.subtotal || item.price * item.qty)}</strong></div>`
+        ).join("");
+
+        const card = document.createElement("div");
+        card.className = "item-card";
+        card.innerHTML = `
+          <div class="item-header">
+            <div>
+              <div class="item-name">${escapeHtml(data.name)}</div>
+              <div class="item-time">${formatDate(data.createdAt)}</div>
+            </div>
+            <div>
+              <span class="status-badge ${statusClass}">${statusText}</span>
+              <div class="item-total">${peso(data.total)}</div>
+            </div>
+          </div>
+
+          <div class="item-details">
+            <div><strong>Contact:</strong> ${escapeHtml(data.contact)}</div>
+            <div><strong>Pickup:</strong> ${escapeHtml(data.pickup)}</div>
+            ${data.notes ? `<div><strong>Notes:</strong> ${escapeHtml(data.notes)}</div>` : ""}
+          </div>
+
+          <div class="item-items-list">
+            <strong style="color:#8b451f; display:block; margin-bottom:6px; font-size:12px; letter-spacing:1px;">ITEMS</strong>
+            ${itemsHtml}
+          </div>
+
+          <div class="item-actions">
+            ${status !== "completed"
+              ? `<button class="btn-complete" onclick="markComplete('${docSnap.id}')">✅ Mark Complete</button>`
+              : `<button class="btn-pending" onclick="markPending('${docSnap.id}')">⏳ Mark Pending</button>`
+            }
+            <button class="btn-delete" onclick="deleteOrder('${docSnap.id}')">🗑️ Delete</button>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    document.getElementById("statOrders").textContent = snapshot.size;
+    document.getElementById("statRevenue").textContent = peso(totalRevenue);
+    document.getElementById("statPending").textContent = pending;
+
+    updateAnalytics();
+  }, (err) => {
+    console.error("Orders error:", err);
+    list.innerHTML = '<div class="empty-state">Could not load orders.</div>';
+  });
+}
+
+// =================================
+// LOAD REVIEWS
+// =================================
+function loadReviews() {
+  const list = document.getElementById("reviewsList");
+  const q = window.query(
+    window.collection(window.db, "reviews"),
+    window.orderBy("createdAt", "desc")
+  );
+
+  window.onSnapshot(q, (snapshot) => {
+    list.innerHTML = "";
+    allReviews = [];
+
+    if (snapshot.empty) {
+      list.innerHTML = '<div class="empty-state">No reviews yet.</div>';
+    } else {
+      snapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        data._id = docSnap.id;
+        allReviews.push(data);
+
+        const stars = "★".repeat(data.rating) + "☆".repeat(5 - data.rating);
+
+        const card = document.createElement("div");
+        card.className = "item-card";
+        card.innerHTML = `
+          <div class="item-header">
+            <div>
+              <div class="item-name">${escapeHtml(data.name)}</div>
+              <div class="item-time">${formatDate(data.createdAt)}</div>
+            </div>
+            <div class="review-stars">${stars}</div>
+          </div>
+
+          <p style="font-style: italic; color: #45372b; margin-bottom: 12px;">
+            "${escapeHtml(data.text)}"
+          </p>
+
+          <div class="item-actions">
+            <button class="btn-delete" onclick="deleteReview('${docSnap.id}')">🗑️ Delete Review</button>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    document.getElementById("statReviews").textContent = snapshot.size;
+
+    updateAnalytics();
+  }, (err) => {
+    console.error("Reviews error:", err);
+    list.innerHTML = '<div class="empty-state">Could not load reviews.</div>';
+  });
+}
+
+// =================================
+// ANALYTICS COMPUTATION
+// =================================
+function updateAnalytics() {
+  const todayOrders = allOrders.filter(o => isToday(o.createdAt));
+  const todayRevenue = todayOrders.reduce((sum, o) => sum + (Number(o.total) || 0), 0);
+
+  document.getElementById("kpiOrdersToday").textContent = todayOrders.length;
+  document.getElementById("kpiRevenueToday").textContent = peso(todayRevenue);
+
+  const weekOrders = allOrders.filter(o => isThisWeek(o.createdAt));
+  document.getElementById("kpiOrdersWeek").textContent = weekOrders.length;
+
+  const totalRev = allOrders.reduce((sum, o) => sum + (Number(o.total) || 0), 0);
+  const avg = allOrders.length ? Math.round(totalRev / allOrders.length) : 0;
+  document.getElementById("kpiAvgOrder").textContent = peso(avg);
+
+  const recentOrdersList = document.getElementById("recentOrdersList");
+  const last5Orders = allOrders.slice(0, 5);
+
+  if (last5Orders.length === 0) {
+    recentOrdersList.innerHTML = '<li style="border:none; padding:20px; text-align:center; color:#7a6b5c; font-style:italic;">No orders yet.</li>';
+  } else {
+    recentOrdersList.innerHTML = last5Orders.map(o => `
+      <li>
+        <span><strong>${escapeHtml(o.name)}</strong> — ${peso(o.total)}</span>
+        <span class="time">${timeAgo(o.createdAt)}</span>
+      </li>
+    `).join("");
+  }
+
+  const recentReviewsList = document.getElementById("recentReviewsList");
+  const last5Reviews = allReviews.slice(0, 5);
+
+  if (last5Reviews.length === 0) {
+    recentReviewsList.innerHTML = '<li style="border:none; padding:20px; text-align:center; color:#7a6b5c; font-style:italic;">No reviews yet.</li>';
+  } else {
+    recentReviewsList.innerHTML = last5Reviews.map(r => `
+      <li>
+        <span><strong>${escapeHtml(r.name)}</strong> — ${"★".repeat(r.rating)}</span>
+        <span class="time">${timeAgo(r.createdAt)}</span>
+      </li>
+    `).join("");
+  }
+
+  const productCounts = {};
+  allOrders.forEach(order => {
+    (order.items || []).forEach(item => {
+      if (!productCounts[item.name]) productCounts[item.name] = 0;
+      productCounts[item.name] += item.qty || 0;
+    });
+  });
+
+  const sorted = Object.entries(productCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
+
+  const bestSellersList = document.getElementById("bestSellersList");
+
+  if (sorted.length === 0) {
+    bestSellersList.innerHTML = '<li style="border:none; padding:20px; text-align:center; color:#7a6b5c; font-style:italic;">No data yet.</li>';
+  } else {
+    const medals = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"];
+    bestSellersList.innerHTML = sorted.map(([name, count], i) => `
+      <li>
+        <span>${medals[i] || "•"} <strong>${escapeHtml(name)}</strong></span>
+        <span class="time">${count} sold</span>
+      </li>
+    `).join("");
+  }
+}
+
+// =================================
+// ACTIONS — NO CONFIRMATION POPUPS
+// =================================
+async function markComplete(orderId) {
+  try {
+    await window.updateDoc(window.doc(window.db, "orders", orderId), {
+      status: "completed",
+      completedAt: window.serverTimestamp()
+    });
+  } catch (err) {
+    console.error(err);
+    alert("❌ Could not update order.");
+  }
+}
+
+async function markPending(orderId) {
+  try {
+    await window.updateDoc(window.doc(window.db, "orders", orderId), {
+      status: "pending"
+    });
+  } catch (err) {
+    console.error(err);
+    alert("❌ Could not update order.");
+  }
+}
+
+async function deleteOrder(orderId) {
+  try {
+    await window.deleteDoc(window.doc(window.db, "orders", orderId));
+  } catch (err) {
+    console.error(err);
+    alert("❌ Could not delete order.");
+  }
+}
+
+async function deleteReview(reviewId) {
+  try {
+    await window.deleteDoc(window.doc(window.db, "reviews", reviewId));
+  } catch (err) {
+    console.error(err);
+    alert("❌ Could not delete review.");
+  }
+}
+</script>
+
+</body>
+</html>
