@@ -3,9 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SandChef | FAQ</title>
+  <title>SandChef | Order</title>
   <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/svg+xml" href="logo.svg">
+  <!-- 🔥 Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } 
+    from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBqo4Iiohy3H_MyoC7TRq0xc9alh6LkXQY",
+    authDomain: "sandchef-92397.firebaseapp.com",
+    projectId: "sandchef-92397",
+    storageBucket: "sandchef-92397.firebasestorage.app",
+    messagingSenderId: "876625869958",
+    appId: "1:876625869958:web:1dedd8711533735e102507",
+    measurementId: "G-YTD2RD5JD4"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  window.db = db;
+  window.collection = collection;
+  window.addDoc = addDoc;
+  window.serverTimestamp = serverTimestamp;
+</script>
 
 <!-- 📊 Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-YTD2RD5JD4"></script>
@@ -31,93 +55,206 @@
     <a href="order.html">Order</a>
   </div>
 </nav>
+
 <header class="page-hero">
-  <p class="eyebrow">NEED HELP?</p>
-  <h1>Frequently Asked Questions</h1>
-  <p>Quick answers to common questions.</p>
+  <p class="eyebrow">FRESH • AFFORDABLE • DELICIOUS</p>
+  <h1>Place Your Order</h1>
+  <p>Pick your favorites, add your details, and we'll handle the rest.</p>
 </header>
 
-<section class="faq-section">
-  <div class="faq-list">
-
-    <details class="faq-item">
-      <summary>How do I place an order?</summary>
-      <p>
-        Go to our <a href="order.html">Order page</a>, select your sandwiches,
-        fill in your details, and click "Submit Order." Then send us a message
-        via Messenger to confirm.
-      </p>
-    </details>
-
-    <details class="faq-item">
-      <summary>Do you deliver?</summary>
-      <p>
-        We currently offer <strong>pickup only</strong> at school.
-        You can choose to meet at the main gate or arrange with the seller.
-      </p>
-    </details>
-
-    <details class="faq-item">
-      <summary>What payment methods do you accept?</summary>
-      <p>
-        Cash (face-to-face) is our main method.
-        GCash may be available — please ask the seller.
-      </p>
-    </details>
-
-    <details class="faq-item">
-      <summary>How much do your sandwiches cost?</summary>
-      <p>
-        Sandwiches start at <strong>₱15</strong>.
-        Combo meals with juice are only <strong>₱20</strong>.
-      </p>
-    </details>
-
-    <details class="faq-item">
-      <summary>Can I order in advance?</summary>
-      <p>
-        Yes! Just message us via Messenger and we'll prepare your order
-        for a specific time — perfect for lunch break.
-      </p>
-    </details>
-
-    <details class="faq-item">
-      <summary>What are the ingredients?</summary>
-      <p>
-        Our sandwiches contain bread, ham or chocolate filling, and optional
-        cheese or spreads. Please let us know if you have any allergies.
-      </p>
-    </details>
-
-    <details class="faq-item">
-      <summary>Do you have student discounts?</summary>
-      <p>
-        Our prices are already student-friendly! But watch out for seasonal
-        promos like "Buy 2 Get 1 Free" during special weeks.
-      </p>
-    </details>
-
-    <details class="faq-item">
-      <summary>How long does an order take?</summary>
-      <p>
-        Sandwiches are made fresh. Most orders are ready in
-        <strong>5–10 minutes</strong>.
-      </p>
-    </details>
-
+<section class="how-it-works">
+  <div class="title">
+    <h2>How It Works</h2>
+    <p>Three simple steps to get your empanabread.</p>
   </div>
 
-  <div class="center" style="margin-top:40px">
-    <p>Still have questions?</p>
-    <a class="btn" href="contact.html">Contact Us</a>
+  <div class="how-grid">
+    <div class="how-card">
+      <div class="how-number">1</div>
+      <h3>Choose Your Items</h3>
+      <p>Select your empanabread and how many you want.</p>
+    </div>
+
+    <div class="how-card">
+      <div class="how-number">2</div>
+      <h3>Add Your Details</h3>
+      <p>Tell us your name, contact, and pickup arrangement.</p>
+    </div>
+
+    <div class="how-card">
+      <div class="how-number">3</div>
+      <h3>Confirm via Messenger</h3>
+      <p>After submitting, message us to finalize your order.</p>
+    </div>
+  </div>
+</section>
+
+<main>
+<form id="orderForm">
+<div class="layout">
+
+<section class="panel">
+  <div class="panel-head">
+    <h2>Choose Your Empanabread</h2>
+    <p class="hint">Select your preferred products and quantities.</p>
+  </div>
+
+  <div class="product">
+    <div class="product-info">
+      <div class="product-name">Ham Filling</div>
+      <div class="price">₱15 each</div>
+    </div>
+    <div class="controls">
+      <button type="button" data-item="ham" data-change="-1">−</button>
+      <span class="qty" id="qty-ham">0</span>
+      <button type="button" data-item="ham" data-change="1">+</button>
+    </div>
+  </div>
+
+  <div class="product">
+    <div class="product-info">
+      <div class="product-name">Chocolate Filling</div>
+      <div class="price">₱15 each</div>
+    </div>
+    <div class="controls">
+      <button type="button" data-item="chocolate" data-change="-1">−</button>
+      <span class="qty" id="qty-chocolate">0</span>
+      <button type="button" data-item="chocolate" data-change="1">+</button>
+    </div>
+  </div>
+
+  <div class="product">
+    <div class="product-info">
+      <div class="product-name">Ham Filling with Juice</div>
+      <div class="price">₱20 each</div>
+    </div>
+    <div class="controls">
+      <button type="button" data-item="hamJuice" data-change="-1">−</button>
+      <span class="qty" id="qty-hamJuice">0</span>
+      <button type="button" data-item="hamJuice" data-change="1">+</button>
+    </div>
+  </div>
+
+  <div class="product">
+    <div class="product-info">
+      <div class="product-name">Chocolate Filling with Juice</div>
+      <div class="price">₱20 each</div>
+    </div>
+    <div class="controls">
+      <button type="button" data-item="chocolateJuice" data-change="-1">−</button>
+      <span class="qty" id="qty-chocolateJuice">0</span>
+      <button type="button" data-item="chocolateJuice" data-change="1">+</button>
+    </div>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-head">
+    <h2>Customer Details</h2>
+    <p class="hint">Tell us who we're making this order for.</p>
+  </div>
+
+  <div class="form-group">
+    <label for="name">Full Name *</label>
+    <input id="name" required maxlength="100" placeholder="Enter your full name">
+  </div>
+
+  <div class="form-group">
+    <label for="contact">Contact Number or Messenger Name *</label>
+    <input id="contact" required maxlength="100" placeholder="Enter your contact details">
+  </div>
+
+  <div class="form-group">
+    <label for="pickup">Pickup Arrangement *</label>
+    <select id="pickup" required>
+      <option value="">Choose an option</option>
+      <option>Meet at school</option>
+      <option>Arrange pickup with seller</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="notes">Order Notes (Optional)</label>
+    <textarea id="notes" maxlength="500" placeholder="Any additional instructions?"></textarea>
+  </div>
+
+  <div class="payment-box">
+    <div class="payment-icon">💵</div>
+    <div>
+      <strong>Cash / Face-to-Face Payment</strong>
+      <p>Pay in cash when you meet the SandChef seller at school.</p>
+    </div>
+  </div>
+
+  <div class="total-row">
+    <span>Order Total</span>
+    <span class="total" id="total">₱0</span>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Submit Order</button>
+  <p class="error" id="error" role="alert"></p>
+</section>
+
+</div>
+</form>
+
+<section class="confirmation" id="confirmation" aria-live="polite">
+  <div class="confirm-icon">✅</div>
+  <h2>Order Summary Created!</h2>
+  <p id="intro" class="confirm-intro"></p>
+
+  <div class="summary-box">
+    <h3>Your Items</h3>
+    <ul id="summaryItems"></ul>
+  </div>
+
+  <div class="total-row">
+    <span>Total to Pay</span>
+    <span class="total" id="summaryTotal">₱0</span>
+  </div>
+
+  <div class="info-block">
+    <p id="pickupSummary"></p>
+    <p id="notesSummary"></p>
+  </div>
+
+<button type="button" class="btn btn-secondary" id="newOrder"
+        style="margin-top:12px;">
+  Create Another Order
+</button>
+</main>
+
+<section class="info-section">
+  <div class="title">
+    <h2>Good to Know</h2>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="feature-icon">⏱️</div>
+      <h3>Fast Prep</h3>
+      <p>Most orders ready in 5–10 minutes.</p>
+    </div>
+
+    <div class="info-card">
+      <div class="feature-icon">💵</div>
+      <h3>Pay on Meetup</h3>
+      <p>Cash only — paid face-to-face at school.</p>
+    </div>
+
+    <div class="info-card">
+      <div class="feature-icon">📩</div>
+      <h3>Confirm First</h3>
+      <p>Message us on Messenger to finalize.</p>
+    </div>
   </div>
 </section>
 
 <section class="order-banner">
   <p class="eyebrow">YOUR NEXT FAVORITE SNACK</p>
   <h2>Ready to Take a Bite?</h2>
-  <p>Choose your favorite sandwich and place your order today.</p>
-  <a class="menu-btn banner-btn" href="order.html">Place Your Order</a>
+  <p>Choose your favorite empanabread and place your order today.</p>
+  <a class="menu-btn banner-btn" href="Order.html">Place Your Order</a>
   <p class="payment-note">Payment: Cash / Face-to-face at school</p>
 </section>
 
@@ -125,6 +262,139 @@
   <p>© 2026 SandChef</p>
   <p>Fresh • Affordable • Delicious</p>
 </footer>
+
+<script>
+const products = {
+  ham: { name: "Ham Filling", price: 15, qty: 0 },
+  chocolate: { name: "Chocolate Filling", price: 15, qty: 0 },
+  hamJuice: { name: "Ham Filling with Juice", price: 20, qty: 0 },
+  chocolateJuice: { name: "Chocolate Filling with Juice", price: 20, qty: 0 }
+};
+
+const peso = amount => "₱" + amount.toLocaleString("en-PH");
+
+function updateTotal() {
+  let total = 0;
+  for (const [key, product] of Object.entries(products)) {
+    document.getElementById("qty-" + key).textContent = product.qty;
+    total += product.price * product.qty;
+  }
+  document.getElementById("total").textContent = peso(total);
+  return total;
+}
+
+document.querySelectorAll("[data-change]").forEach(button => {
+  button.addEventListener("click", () => {
+    const product = products[button.dataset.item];
+    product.qty = Math.max(0, product.qty + Number(button.dataset.change));
+    updateTotal();
+    document.getElementById("error").textContent = "";
+  });
+});
+
+document.getElementById("orderForm").addEventListener("submit", async event => {
+  event.preventDefault();
+
+  const total = updateTotal();
+  const selected = Object.values(products).filter(p => p.qty > 0);
+  const error = document.getElementById("error");
+
+  if (selected.length === 0) {
+    error.textContent = "Please select at least one sandwich.";
+    return;
+  }
+
+  if (!event.currentTarget.reportValidity()) return;
+
+  const name = document.getElementById("name").value.trim();
+  const contact = document.getElementById("contact").value.trim();
+  const pickup = document.getElementById("pickup").value;
+  const notes = document.getElementById("notes").value.trim();
+
+  error.textContent = "Saving order...";
+
+  // 🔥 SAVE TO FIREBASE
+  try {
+    await window.addDoc(window.collection(window.db, "orders"), {
+      name: name,
+      contact: contact,
+      pickup: pickup,
+      notes: notes,
+      items: selected.map(p => ({
+        name: p.name,
+        price: p.price,
+        qty: p.qty,
+        subtotal: p.price * p.qty
+      })),
+      total: total,
+      status: "pending",
+      createdAt: window.serverTimestamp()
+    });
+  } catch (err) {
+    console.error("Error saving order:", err);
+    error.textContent = "❌ Could not save order. Please message us directly.";
+    return;
+  }
+
+  error.textContent = "";
+
+  // Show confirmation
+  document.getElementById("intro").textContent =
+    "Thank you, " + name + "! Contact details: " + contact + ".";
+
+  const list = document.getElementById("summaryItems");
+  list.replaceChildren();
+
+  selected.forEach(product => {
+    const item = document.createElement("li");
+    item.innerHTML =
+      "<span>" + product.name + " × " + product.qty + "</span>" +
+      "<strong>" + peso(product.price * product.qty) + "</strong>";
+    list.appendChild(item);
+  });
+
+  document.getElementById("summaryTotal").textContent = peso(total);
+  document.getElementById("pickupSummary").textContent = "📍 Pickup: " + pickup;
+  document.getElementById("notesSummary").textContent =
+    notes ? "📝 Notes: " + notes : "📝 Notes: None";
+
+  // Build Messenger message
+  buildMessengerLink(name, contact, pickup, notes, selected, total);
+
+  document.getElementById("confirmation").style.display = "block";
+
+  document.getElementById("confirmation").scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+});
+
+document.getElementById("newOrder").addEventListener("click", () => {
+  Object.values(products).forEach(product => product.qty = 0);
+  document.getElementById("orderForm").reset();
+  document.getElementById("confirmation").style.display = "none";
+  document.getElementById("error").textContent = "";
+  updateTotal();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+updateTotal();
+
+function buildMessengerLink(name, contact, pickup, notes, items, total) {
+  const btn = document.getElementById("sendMessenger");
+  if (!btn) return;
+
+  const message =
+    "🥪 SandChef Order 🥪\n\n" +
+    "👤 Name: " + name + "\n" +
+    "📞 Contact: " + contact + "\n" +
+    "📍 Pickup: " + pickup + "\n" +
+    (notes ? "📝 Notes: " + notes + "\n" : "") +
+    "\n🛒 Items:\n" +
+    items.map(p => "• " + p.name + " × " + p.qty + " = " + peso(p.price * p.qty)).join("\n") +
+    "\n\n💰 Total: " + peso(total);
+}
+</script>
 
 </body>
 </html>
