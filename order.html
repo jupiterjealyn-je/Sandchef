@@ -401,6 +401,32 @@ function buildMessengerLink(name, contact, pickup, notes, items, total) {
 }
 
 updateTotal();
+
+// =================================
+// AUTO-ADD ITEM FROM URL (?item=xxx)
+// =================================
+const urlParams = new URLSearchParams(window.location.search);
+const itemFromUrl = urlParams.get("item");
+
+if (itemFromUrl && products[itemFromUrl]) {
+  products[itemFromUrl].qty = 1;
+  updateTotal();
+
+  // Smooth scroll to the product so the user sees it added
+  setTimeout(() => {
+    const qtyEl = document.getElementById("qty-" + itemFromUrl);
+    if (qtyEl) {
+      qtyEl.scrollIntoView({ behavior: "smooth", block: "center" });
+      qtyEl.style.transition = "transform 0.4s ease";
+      qtyEl.style.transform = "scale(1.8)";
+      qtyEl.style.color = "#b86828";
+      setTimeout(() => {
+        qtyEl.style.transform = "scale(1)";
+        qtyEl.style.color = "";
+      }, 700);
+    }
+  }, 400);
+}
 </script>
 
 </body>
