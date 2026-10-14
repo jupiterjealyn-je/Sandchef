@@ -5,7 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SandChef | Home</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="icon" type="image/svg+xml" href="logo.svg">
+  <link rel="icon" type="image/png" href="sandcheflogo.png">
+
+  <!-- 📱 Social Media Preview -->
+  <meta property="og:title" content="SandChef Empanabread">
+  <meta property="og:description" content="Fresh • Affordable • Delicious snacks for everyone!">
+  <meta property="og:image" content="https://sandchef26-blip.github.io/Sandchef/sandcheflogo.png">
+  <meta property="og:url" content="https://sandchef26-blip.github.io/Sandchef/">
+  <meta property="og:type" content="website">
 
   <!-- 🔥 Firebase SDK -->
   <script type="module">
@@ -36,7 +43,6 @@
     window.deleteDoc = deleteDoc;
     window.doc = doc;
 
-    // Signal that Firebase is ready
     window.firebaseReady = true;
     window.dispatchEvent(new Event("firebaseReady"));
   </script>
@@ -72,7 +78,7 @@
   </div>
   <p class="eyebrow">FRESH • AFFORDABLE • DELICIOUS</p>
   <h1>Welcome to <span>SandChef</span></h1>
-  <p class="tagline">Making Your Choice Delicious</p>
+  <p class="tagline">Fresh • Affordable • Delicious</p>
   <div class="hero-buttons">
     <a class="btn" href="order.html">Order Now</a>
     <a class="btn btn-outline" href="menu.html">View Menu</a>
@@ -104,7 +110,7 @@
     <div class="promo-card">
       <div class="promo-badge">LOYALTY</div>
       <h3>5th Order = Free Juice</h3>
-      <p>Buy any empanabread 5 times and get a free juice on your 6th visit!</p>
+      <p>Buy any Empanabread 5 times and get a free juice on your 6th visit!</p>
       <span class="promo-code">Ask seller to track</span>
     </div>
   </div>
@@ -214,7 +220,7 @@
 <section class="order-banner">
   <p class="eyebrow">YOUR NEXT FAVORITE SNACK</p>
   <h2>Ready to Take a Bite?</h2>
-  <p>Choose your favorite empanabread and place your order today.</p>
+  <p>Choose your favorite Empanabread and place your order today.</p>
   <a class="menu-btn banner-btn" href="order.html">Place Your Order</a>
   <p class="payment-note">Payment: Cash / Face-to-face at school</p>
 </section>
@@ -226,9 +232,6 @@
 
 <!-- 🔥 ALL SCRIPTS -->
 <script>
-// =================================
-// WAIT UNTIL FIREBASE IS READY
-// =================================
 function whenFirebaseReady(callback) {
   if (window.firebaseReady && window.db) {
     callback();
@@ -237,18 +240,12 @@ function whenFirebaseReady(callback) {
   }
 }
 
-// =================================
-// HELPERS
-// =================================
 function escapeHtml(str) {
   const div = document.createElement("div");
   div.textContent = str || "";
   return div.innerHTML;
 }
 
-// =================================
-// STAR PICKER
-// =================================
 const starPicker = document.getElementById("starPicker");
 const ratingInput = document.getElementById("rating");
 
@@ -263,9 +260,6 @@ starPicker.querySelectorAll("span").forEach(star => {
 });
 starPicker.querySelectorAll("span").forEach(s => s.classList.add("active"));
 
-// =================================
-// SUBMIT REVIEW
-// =================================
 const reviewForm = document.getElementById("reviewForm");
 const reviewError = document.getElementById("reviewError");
 const reviewConfirm = document.getElementById("reviewConfirm");
@@ -273,7 +267,6 @@ const reviewConfirmText = document.getElementById("reviewConfirmText");
 
 reviewForm.addEventListener("submit", async event => {
   event.preventDefault();
-
   const name = document.getElementById("reviewerName").value.trim();
   const rating = Number(document.getElementById("rating").value);
   const text = document.getElementById("reviewText").value.trim();
@@ -284,12 +277,9 @@ reviewForm.addEventListener("submit", async event => {
   }
 
   reviewError.textContent = "Sending...";
-
   try {
     await window.addDoc(window.collection(window.db, "reviews"), {
-      name: name,
-      rating: rating,
-      text: text,
+      name: name, rating: rating, text: text,
       createdAt: window.serverTimestamp()
     });
 
@@ -300,7 +290,6 @@ reviewForm.addEventListener("submit", async event => {
     reviewForm.reset();
     ratingInput.value = 5;
     starPicker.querySelectorAll("span").forEach(s => s.classList.add("active"));
-
     reviewConfirm.scrollIntoView({ behavior: "smooth", block: "center" });
   } catch (err) {
     console.error("Error adding review:", err);
@@ -308,34 +297,24 @@ reviewForm.addEventListener("submit", async event => {
   }
 });
 
-// =================================
-// LIVE STATS + LIVE REVIEWS
-// =================================
 let ordersData = [];
 let reviewsData = [];
 
 function loadLiveStats() {
-  // Orders listener
   window.onSnapshot(window.collection(window.db, "orders"), (snapshot) => {
     ordersData = [];
     snapshot.forEach(d => ordersData.push(d.data()));
     updateStats();
-  }, (err) => {
-    console.error("Orders listen error:", err);
   });
 
-  // Reviews listener
   window.onSnapshot(window.collection(window.db, "reviews"), (snapshot) => {
     reviewsData = [];
     snapshot.forEach(d => reviewsData.push(d.data()));
     updateStats();
-  }, (err) => {
-    console.error("Reviews listen error:", err);
   });
 }
 
 function updateStats() {
-  // Sandwiches sold
   let totalSold = 0;
   ordersData.forEach(order => {
     (order.items || []).forEach(item => {
@@ -343,27 +322,19 @@ function updateStats() {
     });
   });
 
-  // Unique customers
   const uniqueNames = new Set(
-    ordersData
-      .map(o => (o.name || "").trim().toLowerCase())
-      .filter(Boolean)
+    ordersData.map(o => (o.name || "").trim().toLowerCase()).filter(Boolean)
   );
 
-  // Average rating
   let avgRating = "0.0";
   if (reviewsData.length > 0) {
     const sum = reviewsData.reduce((acc, r) => acc + (Number(r.rating) || 0), 0);
     avgRating = (sum / reviewsData.length).toFixed(1);
   }
 
-  // Total orders
-  const totalOrders = ordersData.length;
-
-  // Update the numbers
   animateStat("statSold", totalSold);
   animateStat("statCustomers", uniqueNames.size);
-  animateStat("statOrders", totalOrders);
+  animateStat("statOrders", ordersData.length);
 
   const ratingEl = document.getElementById("statRating");
   if (ratingEl) ratingEl.textContent = avgRating + " ★";
@@ -372,10 +343,8 @@ function updateStats() {
 function animateStat(id, target) {
   const el = document.getElementById(id);
   if (!el) return;
-
   const duration = 1200;
   const startTime = performance.now();
-
   function step(currentTime) {
     const elapsed = currentTime - startTime;
     const progress = Math.min(elapsed / duration, 1);
@@ -384,13 +353,9 @@ function animateStat(id, target) {
     if (progress < 1) requestAnimationFrame(step);
     else el.textContent = target;
   }
-
   requestAnimationFrame(step);
 }
 
-// =================================
-// LIVE REVIEWS GRID
-// =================================
 function initReviews() {
   const reviewsGrid = document.getElementById("reviewsGrid");
   if (!reviewsGrid) return;
@@ -402,7 +367,6 @@ function initReviews() {
 
   window.onSnapshot(q, (snapshot) => {
     reviewsGrid.innerHTML = "";
-
     if (snapshot.empty) {
       reviewsGrid.innerHTML = '<p class="reviews-empty">No reviews yet. Be the first!</p>';
       return;
@@ -411,7 +375,6 @@ function initReviews() {
     snapshot.forEach((docSnap) => {
       const data = docSnap.data();
       const stars = "★".repeat(data.rating) + "☆".repeat(5 - data.rating);
-
       const card = document.createElement("div");
       card.className = "review-card";
       card.innerHTML = `
@@ -431,26 +394,17 @@ function initReviews() {
           alert("❌ Incorrect password.");
           return;
         }
-
         try {
           await window.deleteDoc(window.doc(window.db, "reviews", btn.dataset.id));
         } catch (err) {
-          console.error("Delete failed:", err);
           alert("❌ Could not delete.");
         }
       });
     });
-  }, (err) => {
-    console.error("Reviews grid error:", err);
-    reviewsGrid.innerHTML = '<p class="reviews-empty">Could not load reviews.</p>';
   });
 }
 
-// =================================
-// START EVERYTHING
-// =================================
 whenFirebaseReady(() => {
-  console.log("✅ Firebase ready — starting listeners");
   loadLiveStats();
   initReviews();
 });
