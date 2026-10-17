@@ -513,7 +513,7 @@ footer p { color: #ffffff; font-size: 15px; margin: 5px 0; }
 .confirmation .note { font-size: 13px; color: #6b6055; background: #fdf3d3; padding: 14px 16px; border-radius: 10px; margin: 20px 0; line-height: 1.6; text-align: left; }
 
 /* =================================
-   14. CORE VALUES (Perfectly Aligned)
+   14. CORE VALUES (Perfect Alignment)
    ================================= */
 .core-values {
     padding: 70px 8%;
@@ -523,24 +523,50 @@ footer p { color: #ffffff; font-size: 15px; margin: 5px 0; }
 
 .values-grid {
     display: grid;
-    /* Force exactly 5 columns on desktop so all 5 cards sit in one perfect row */
+    /* By default (large screens), show exactly 5 columns */
     grid-template-columns: repeat(5, 1fr); 
-    gap: 15px;
-    max-width: 1300px;
+    gap: 20px;
+    max-width: 1250px;
     margin: 40px auto 0;
 }
 
+/* When the screen gets smaller (like a laptop), switch to 3 columns */
+/* This will put 3 cards on top, and 2 cards centered on the bottom */
+@media (max-width: 1200px) {
+    .values-grid {
+        grid-template-columns: repeat(3, 1fr);
+        max-width: 900px;
+    }
+}
+
+/* When the screen gets to tablet size, switch to 2 columns */
+@media (max-width: 800px) {
+    .values-grid {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 600px;
+    }
+}
+
+/* On mobile phones, switch to 1 column */
+@media (max-width: 500px) {
+    .values-grid {
+        grid-template-columns: 1fr;
+        max-width: 350px;
+    }
+}
+
+/* Keep the card styling the same */
 .value-card {
     background: #fffef9;
     border: 1px solid #f5e3a3;
+    border-top: 4px solid #b86828;
     border-radius: 16px;
-    padding: 25px 15px;
-    text-align: center;
+    padding: 25px 20px;
+    text-align: left;
     box-shadow: 0 4px 15px rgba(184, 104, 40, 0.05);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
     flex-direction: column;
-    align-items: center;
     height: 100%;
 }
 
@@ -551,14 +577,7 @@ footer p { color: #ffffff; font-size: 15px; margin: 5px 0; }
 }
 
 .value-icon {
-    width: 60px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #fdf3d3;
-    border-radius: 50%;
-    font-size: 28px;
+    font-size: 32px;
     margin-bottom: 15px;
 }
 
@@ -572,33 +591,9 @@ footer p { color: #ffffff; font-size: 15px; margin: 5px 0; }
 .value-card p {
     font-size: 14px;
     color: #5c5245;
-    line-height: 1.5;
+    line-height: 1.6;
     margin: 0;
-    flex-grow: 1; 
-}
-
-/* =================================
-   RESPONSIVE FIXES FOR CORE VALUES
-   ================================= */
-
-/* Tablets (Under 1100px): Force exactly 3 columns */
-@media (max-width: 1100px) {
-    .values-grid {
-        grid-template-columns: repeat(3, 1fr);
-        max-width: 900px;
-    }
-}
-
-/* Phones (Under 700px): Force exactly 1 column */
-@media (max-width: 700px) {
-    .core-values { padding: 50px 5%; }
-    .values-grid {
-        grid-template-columns: 1fr;
-        max-width: 400px;
-    }
-    .value-card {
-        padding: 25px 20px;
-    }
+    flex-grow: 1;
 }
 /* =================================
    15. STATS & PAYMENT INFO
