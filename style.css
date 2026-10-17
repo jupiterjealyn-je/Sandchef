@@ -414,6 +414,7 @@ footer p { color: #ffffff; font-size: 15px; margin: 5px 0; }
 
 .product-card-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; margin-left: auto; }
 
+/* Default State: Add button visible, controls hidden */
 .add-btn {
     background: #b86828;
     color: #ffffff;
@@ -426,14 +427,20 @@ footer p { color: #ffffff; font-size: 15px; margin: 5px 0; }
     transition: all 0.2s;
     font-family: inherit;
     white-space: nowrap;
+    display: block;
 }
 
 .add-btn:hover { background: #96531d; transform: scale(1.05); }
-.add-btn.hidden { display: none; }
 
 .controls { display: none; align-items: center; gap: 6px; background: #fffef9; border: 2px solid #b86828; border-radius: 30px; padding: 3px 6px; }
-.controls.visible { display: flex; }
+.subtotal { font-size: 13px; font-weight: bold; color: #b86828; display: none; white-space: nowrap; }
 
+/* Active State: Add button hidden, controls visible */
+.product-card.active .add-btn { display: none; }
+.product-card.active .controls { display: flex; }
+.product-card.active .subtotal { display: block; }
+
+/* Controls styling */
 .controls button {
     width: 26px;
     height: 26px;
@@ -455,8 +462,6 @@ footer p { color: #ffffff; font-size: 15px; margin: 5px 0; }
 
 .controls button:hover { background-color: #b86828; color: #ffffff; transform: scale(1.1); }
 .controls .qty { min-width: 22px; text-align: center; font-size: 15px; font-weight: bold; color: #1f1a14; }
-.subtotal { font-size: 13px; font-weight: bold; color: #b86828; display: none; white-space: nowrap; }
-.product-card.active .subtotal { display: block; }
 
 /* Form Fields & Payment Box */
 .form-group { margin-bottom: 16px; }
@@ -523,39 +528,12 @@ footer p { color: #ffffff; font-size: 15px; margin: 5px 0; }
 
 .values-grid {
     display: grid;
-    /* By default (large screens), show exactly 5 columns */
     grid-template-columns: repeat(5, 1fr); 
     gap: 20px;
     max-width: 1250px;
     margin: 40px auto 0;
 }
 
-/* When the screen gets smaller (like a laptop), switch to 3 columns */
-/* This will put 3 cards on top, and 2 cards centered on the bottom */
-@media (max-width: 1200px) {
-    .values-grid {
-        grid-template-columns: repeat(3, 1fr);
-        max-width: 900px;
-    }
-}
-
-/* When the screen gets to tablet size, switch to 2 columns */
-@media (max-width: 800px) {
-    .values-grid {
-        grid-template-columns: repeat(2, 1fr);
-        max-width: 600px;
-    }
-}
-
-/* On mobile phones, switch to 1 column */
-@media (max-width: 500px) {
-    .values-grid {
-        grid-template-columns: 1fr;
-        max-width: 350px;
-    }
-}
-
-/* Keep the card styling the same */
 .value-card {
     background: #fffef9;
     border: 1px solid #f5e3a3;
@@ -576,25 +554,10 @@ footer p { color: #ffffff; font-size: 15px; margin: 5px 0; }
     border-color: #b86828;
 }
 
-.value-icon {
-    font-size: 32px;
-    margin-bottom: 15px;
-}
+.value-icon { font-size: 32px; margin-bottom: 15px; }
+.value-card h3 { color: #b86828; font-size: 18px; margin-bottom: 10px; font-weight: bold; }
+.value-card p { font-size: 14px; color: #5c5245; line-height: 1.6; margin: 0; flex-grow: 1; }
 
-.value-card h3 {
-    color: #b86828;
-    font-size: 18px;
-    margin-bottom: 10px;
-    font-weight: bold;
-}
-
-.value-card p {
-    font-size: 14px;
-    color: #5c5245;
-    line-height: 1.6;
-    margin: 0;
-    flex-grow: 1;
-}
 /* =================================
    15. STATS & PAYMENT INFO
    ================================= */
@@ -646,7 +609,42 @@ footer p { color: #ffffff; font-size: 15px; margin: 5px 0; }
 .review-confirm p { color: #2f2921; font-size: 15px; margin: 0; }
 
 /* =================================
-   17. ULTIMATE RESPONSIVE FIXES
+   17. HOW IT WORKS
+   ================================= */
+.how-it-works { padding: 60px 8%; background: #fffdf7; text-align: center; }
+.how-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 25px; max-width: 1000px; margin: 40px auto 0; }
+.how-card { background: #fffef9; border: 1px solid #f5e3a3; border-radius: 14px; padding: 30px 22px; transition: transform 0.3s, box-shadow 0.3s; position: relative; }
+.how-card:hover { transform: translateY(-6px); box-shadow: 0 12px 25px rgba(184, 104, 40, 0.12); }
+.how-number { display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; border-radius: 50%; background: #b86828; color: #ffffff; font-size: 22px; font-weight: bold; margin-bottom: 14px; }
+.how-card h3 { color: #b86828; font-size: 19px; margin-bottom: 8px; }
+.how-card p { font-size: 15px; color: #2f2921; margin: 0; line-height: 1.6; }
+
+/* =================================
+   18. PROMOS
+   ================================= */
+.promos { padding: 60px 8%; background: #fffdf7; text-align: center; }
+.promos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 25px; max-width: 1100px; margin: 40px auto 0; }
+.promo-card { background: linear-gradient(135deg, #fffef9, #fdf3d3); border: 2px dashed #b86828; border-radius: 14px; padding: 30px 22px; position: relative; transition: transform 0.3s, box-shadow 0.3s; }
+.promo-card:hover { transform: translateY(-6px); box-shadow: 0 12px 25px rgba(184, 104, 40, 0.15); }
+.promo-badge { display: inline-block; background: #b86828; color: #ffffff; font-size: 11px; font-weight: bold; letter-spacing: 1.5px; padding: 5px 12px; border-radius: 20px; margin-bottom: 12px; }
+.promo-card h3 { color: #b86828; font-size: 21px; margin-bottom: 10px; }
+.promo-card p { font-size: 15px; color: #2f2921; line-height: 1.6; margin-bottom: 12px; }
+.promo-code { display: inline-block; font-size: 12px; color: #7a3d14; background: #ffffff; padding: 5px 12px; border-radius: 20px; font-weight: bold; border: 1px solid #f5e3a3; }
+
+/* =================================
+   19. PAYMENT INFO (Contact Page)
+   ================================= */
+.payment-info-section { padding: 60px 8%; background: #fffdf7; text-align: center; }
+.payment-info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 25px; max-width: 700px; margin: 40px auto 0; }
+.payment-info-card { background: #fffef9; border: 1px solid #f5e3a3; border-radius: 14px; padding: 30px 22px; box-shadow: 0 5px 18px rgba(184, 104, 40, 0.06); transition: transform 0.3s, box-shadow 0.3s; }
+.payment-info-card:hover { transform: translateY(-6px); box-shadow: 0 12px 25px rgba(184, 104, 40, 0.15); }
+.payment-info-card h3 { color: #b86828; font-size: 20px; margin-bottom: 10px; }
+.payment-info-card p { font-size: 15px; color: #2f2921; line-height: 1.7; margin-bottom: 8px; }
+.payment-info-card strong { color: #96531d; }
+.payment-hint { font-size: 13px !important; color: #6b6055 !important; font-style: italic; }
+
+/* =================================
+   20. ULTIMATE RESPONSIVE FIXES
    ================================= */
 
 /* Tablets & Smaller Laptops (Under 1000px) */
@@ -660,8 +658,9 @@ footer p { color: #ffffff; font-size: 15px; margin: 5px 0; }
         padding: 35px 20px 50px; 
         gap: 22px; 
     }
-    
-    .values-grid { grid-template-columns: repeat(3, 1fr); }
+
+    /* Force Core Values to 3 columns on tablets */
+    .values-grid { grid-template-columns: repeat(3, 1fr); max-width: 900px; }
 }
 
 /* Standard Phones (Under 700px) */
@@ -694,9 +693,9 @@ footer p { color: #ffffff; font-size: 15px; margin: 5px 0; }
     .team-card { padding: 18px 14px; }
     .team-card img { width: 90px; height: 90px; }
 
-    /* Core Values */
+    /* Core Values (2 Columns on Phones) */
     .core-values { padding: 40px 18px; }
-    .values-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .values-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 600px;}
     
     /* Order Form */
     .panel { padding: 22px 18px; border-radius: 14px; }
@@ -722,16 +721,16 @@ footer p { color: #ffffff; font-size: 15px; margin: 5px 0; }
     }
 
     .add-btn { width: 100%; padding: 10px; text-align: center; }
-    .controls { width: 100%; justify-content: space-between; }
+    .product-card.active .controls { width: 100%; justify-content: space-between; }
     
     /* Confirmation */
     .confirmation { padding: 28px 20px; margin: 15px 15px 50px; }
     .confirmation h2 { font-size: 21px; }
 }
 
-/* Small Phones (Under 450px) */
-@media (max-width: 450px) {
-    .values-grid { grid-template-columns: 1fr; }
+/* Small Phones (Under 500px) */
+@media (max-width: 500px) {
+    .values-grid { grid-template-columns: 1fr; max-width: 350px; }
     .team-grid { grid-template-columns: 1fr; }
     nav .logo img { height: 35px !important; width: 35px !important; }
     h1, .hero h1, .menu-hero h1 { font-size: 28px; }
