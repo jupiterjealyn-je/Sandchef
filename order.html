@@ -61,94 +61,115 @@
   <p class="eyebrow">FRESH • AFFORDABLE • DELICIOUS</p>
   <h1>Place Your Order</h1>
   <p>Pick your favorites, add your details, and we'll handle the rest.</p>
+  <p class="page-slogan">"Ham It Up with SandChef!"</p>
 </header>
-
-<section class="how-it-works">
-  <div class="title">
-    <h2>How It Works</h2>
-    <p>Three simple steps to get your Empanabread.</p>
-  </div>
-
-  <div class="how-grid">
-    <div class="how-card">
-      <div class="how-number">1</div>
-      <h3>Choose Your Items</h3>
-      <p>Select your Empanabread and how many you want.</p>
-    </div>
-
-    <div class="how-card">
-      <div class="how-number">2</div>
-      <h3>Add Your Details</h3>
-      <p>Tell us your name, contact, and pickup arrangement.</p>
-    </div>
-
-    <div class="how-card">
-      <div class="how-number">3</div>
-      <h3>Confirm via Messenger</h3>
-      <p>After submitting, message us to finalize your order.</p>
-    </div>
-  </div>
-</section>
 
 <main>
 <form id="orderForm">
 <div class="layout">
 
+<!-- LEFT: PRODUCT CARDS -->
 <section class="panel">
   <div class="panel-head">
     <h2>Choose Your Empanabread</h2>
-    <p class="hint">Select your preferred products and quantities.</p>
+    <p class="hint">Tap "Add" to select items, then adjust the quantity.</p>
   </div>
 
-  <div class="product">
-    <div class="product-info">
-      <div class="product-name">Ham Filling</div>
-      <div class="price">₱15 each</div>
+  <!-- 🥪 Ham Filling -->
+  <div class="product-card" data-product="ham">
+    <div class="product-card-left">
+      <div class="product-thumb">
+        <img src="ham.png" alt="Ham Filling Empanabread">
+      </div>
+      <div class="product-card-info">
+        <div class="product-name">Ham Filling</div>
+        <div class="product-desc">Savory ham in a soft Empanabread</div>
+        <div class="price">₱15 each</div>
+      </div>
     </div>
-    <div class="controls">
-      <button type="button" data-item="ham" data-change="-1">−</button>
-      <span class="qty" id="qty-ham">0</span>
-      <button type="button" data-item="ham" data-change="1">+</button>
-    </div>
-  </div>
-
-  <div class="product">
-    <div class="product-info">
-      <div class="product-name">Chocolate Filling</div>
-      <div class="price">₱15 each</div>
-    </div>
-    <div class="controls">
-      <button type="button" data-item="chocolate" data-change="-1">−</button>
-      <span class="qty" id="qty-chocolate">0</span>
-      <button type="button" data-item="chocolate" data-change="1">+</button>
-    </div>
-  </div>
-
-  <div class="product">
-    <div class="product-info">
-      <div class="product-name">Ham Filling with Juice</div>
-      <div class="price">₱20 each</div>
-    </div>
-    <div class="controls">
-      <button type="button" data-item="hamJuice" data-change="-1">−</button>
-      <span class="qty" id="qty-hamJuice">0</span>
-      <button type="button" data-item="hamJuice" data-change="1">+</button>
+    <div class="product-card-right">
+      <button type="button" class="add-btn" data-add="ham">+ Add</button>
+      <div class="controls" id="controls-ham">
+        <button type="button" data-item="ham" data-change="-1">−</button>
+        <span class="qty" id="qty-ham">0</span>
+        <button type="button" data-item="ham" data-change="1">+</button>
+      </div>
+      <div class="subtotal" id="subtotal-ham">₱0</div>
     </div>
   </div>
 
-  <div class="product">
-    <div class="product-info">
-      <div class="product-name">Chocolate Filling with Juice</div>
-      <div class="price">₱20 each</div>
+  <!-- 🍫 Chocolate Filling -->
+  <div class="product-card" data-product="chocolate">
+    <div class="product-card-left">
+      <div class="product-thumb">
+        <img src="choco.png" alt="Chocolate Filling Empanabread">
+      </div>
+      <div class="product-card-info">
+        <div class="product-name">Chocolate Filling</div>
+        <div class="product-desc">Rich chocolate in every bite</div>
+        <div class="price">₱15 each</div>
+      </div>
     </div>
-    <div class="controls">
-      <button type="button" data-item="chocolateJuice" data-change="-1">−</button>
-      <span class="qty" id="qty-chocolateJuice">0</span>
-      <button type="button" data-item="chocolateJuice" data-change="1">+</button>
+    <div class="product-card-right">
+      <button type="button" class="add-btn" data-add="chocolate">+ Add</button>
+      <div class="controls" id="controls-chocolate">
+        <button type="button" data-item="chocolate" data-change="-1">−</button>
+        <span class="qty" id="qty-chocolate">0</span>
+        <button type="button" data-item="chocolate" data-change="1">+</button>
+      </div>
+      <div class="subtotal" id="subtotal-chocolate">₱0</div>
     </div>
   </div>
+
+  <!-- 🥤 Ham + Juice -->
+  <div class="product-card" data-product="hamJuice">
+    <div class="product-card-left">
+      <div class="product-thumb">
+        <img src="hamjuice.png" alt="Ham Filling with Juice">
+      </div>
+      <div class="product-card-info">
+        <div class="product-name">Ham Filling + Juice</div>
+        <div class="product-desc">Savory ham paired with refreshing juice</div>
+        <div class="price">₱20 each</div>
+      </div>
+    </div>
+    <div class="product-card-right">
+      <button type="button" class="add-btn" data-add="hamJuice">+ Add</button>
+      <div class="controls" id="controls-hamJuice">
+        <button type="button" data-item="hamJuice" data-change="-1">−</button>
+        <span class="qty" id="qty-hamJuice">0</span>
+        <button type="button" data-item="hamJuice" data-change="1">+</button>
+      </div>
+      <div class="subtotal" id="subtotal-hamJuice">₱0</div>
+    </div>
+  </div>
+
+  <!-- 🍫🥤 Chocolate + Juice -->
+  <div class="product-card" data-product="chocolateJuice">
+    <div class="product-card-left">
+      <div class="product-thumb">
+        <img src="chocojuice.png" alt="Chocolate Filling with Juice">
+      </div>
+      <div class="product-card-info">
+        <div class="product-name">Chocolate Filling + Juice</div>
+        <div class="product-desc">Sweet chocolate with refreshing juice</div>
+        <div class="price">₱20 each</div>
+      </div>
+    </div>
+    <div class="product-card-right">
+      <button type="button" class="add-btn" data-add="chocolateJuice">+ Add</button>
+      <div class="controls" id="controls-chocolateJuice">
+        <button type="button" data-item="chocolateJuice" data-change="-1">−</button>
+        <span class="qty" id="qty-chocolateJuice">0</span>
+        <button type="button" data-item="chocolateJuice" data-change="1">+</button>
+      </div>
+      <div class="subtotal" id="subtotal-chocolateJuice">₱0</div>
+    </div>
+  </div>
+
 </section>
 
+<!-- RIGHT: CUSTOMER DETAILS -->
 <section class="panel">
   <div class="panel-head">
     <h2>Customer Details</h2>
@@ -179,13 +200,6 @@
     <textarea id="notes" maxlength="500" placeholder="Any additional instructions?"></textarea>
   </div>
 
-  <div class="payment-box">
-    <div class="payment-icon">💵</div>
-    <div>
-      <strong>Cash / Face-to-Face Payment</strong>
-      <p>Pay in cash when you meet the SandChef seller at school.</p>
-    </div>
-  </div>
 
   <div class="total-row">
     <span>Order Total</span>
@@ -199,6 +213,7 @@
 </div>
 </form>
 
+<!-- CONFIRMATION -->
 <section class="confirmation" id="confirmation" aria-live="polite">
   <div class="confirm-icon">✅</div>
   <h2>Order Summary Created!</h2>
@@ -262,7 +277,6 @@
   <h2>Ready to Take a Bite?</h2>
   <p>Choose your favorite Empanabread and place your order today.</p>
   <a class="menu-btn banner-btn" href="order.html">Place Your Order</a>
-  <p class="payment-note">Payment: Cash / Face-to-face at school</p>
 </section>
 
 <footer>
@@ -283,12 +297,41 @@ const peso = amount => "₱" + amount.toLocaleString("en-PH");
 function updateTotal() {
   let total = 0;
   for (const [key, product] of Object.entries(products)) {
-    document.getElementById("qty-" + key).textContent = product.qty;
-    total += product.price * product.qty;
+    const qty = product.qty;
+    const subtotal = product.price * qty;
+
+    document.getElementById("qty-" + key).textContent = qty;
+    document.getElementById("subtotal-" + key).textContent = peso(subtotal);
+
+    const controls = document.getElementById("controls-" + key);
+    const addBtn = document.querySelector(`[data-add="${key}"]`);
+    const card = document.querySelector(`[data-product="${key}"]`);
+
+    if (qty > 0) {
+      controls.classList.add("visible");
+      addBtn.classList.add("hidden");
+      card.classList.add("active");
+    } else {
+      controls.classList.remove("visible");
+      addBtn.classList.remove("hidden");
+      card.classList.remove("active");
+    }
+
+    total += subtotal;
   }
+
   document.getElementById("total").textContent = peso(total);
   return total;
 }
+
+document.querySelectorAll("[data-add]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const key = btn.dataset.add;
+    products[key].qty = 1;
+    updateTotal();
+    document.getElementById("error").textContent = "";
+  });
+});
 
 document.querySelectorAll("[data-change]").forEach(button => {
   button.addEventListener("click", () => {
@@ -396,37 +439,16 @@ function buildMessengerLink(name, contact, pickup, notes, items, total) {
     items.map(p => "• " + p.name + " × " + p.qty + " = " + peso(p.price * p.qty)).join("\n") +
     "\n\n💰 Total: " + peso(total);
 
-  // ⚠️ Replace YOUR-FACEBOOK-USERNAME with your actual page username
   btn.href = "https://m.me/YOUR-FACEBOOK-USERNAME?text=" + encodeURIComponent(message);
 }
 
-updateTotal();
-
-// =================================
-// AUTO-ADD ITEM FROM URL (?item=xxx)
-// =================================
 const urlParams = new URLSearchParams(window.location.search);
 const itemFromUrl = urlParams.get("item");
-
 if (itemFromUrl && products[itemFromUrl]) {
   products[itemFromUrl].qty = 1;
-  updateTotal();
-
-  // Smooth scroll to the product so the user sees it added
-  setTimeout(() => {
-    const qtyEl = document.getElementById("qty-" + itemFromUrl);
-    if (qtyEl) {
-      qtyEl.scrollIntoView({ behavior: "smooth", block: "center" });
-      qtyEl.style.transition = "transform 0.4s ease";
-      qtyEl.style.transform = "scale(1.8)";
-      qtyEl.style.color = "#b86828";
-      setTimeout(() => {
-        qtyEl.style.transform = "scale(1)";
-        qtyEl.style.color = "";
-      }, 700);
-    }
-  }, 400);
 }
+
+updateTotal();
 </script>
 
 </body>
